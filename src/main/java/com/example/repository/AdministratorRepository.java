@@ -44,11 +44,12 @@ public class AdministratorRepository {
 	 * @throws org.springframework.dao.DataAccessException 存在しない場合は例外を発生します
 	 */
 	public Administrator load(Integer id) {
-		String sql = "select id,name,mail_address,password from administrators where id=:id";
+	String sql = "select id,name,mail_address,password from administrators where id=:id";
 		SqlParameterSource param = new MapSqlParameterSource().addValue("id", id);
-		Administrator administrator = template.queryForObject(sql, param, ADMINISTRATOR_ROW_MAPPER);
-		return administrator;
-	}
+	 	Administrator administrator = template.queryForObject(sql, param, ADMINISTRATOR_ROW_MAPPER);
+	 	return administrator;
+	 }
+
 
 	/**
 	 * メールアドレスとパスワードから管理者情報を取得します.
@@ -85,14 +86,36 @@ public class AdministratorRepository {
 	 * @param mailAddress メールアドレス
 	 * @return 管理者情報 存在しない場合はnullを返します
 	 */
+	// public Administrator findByMailAddress(String mailAddress) {
+	// 	String sql = "select id,name,mail_address,password from administrators where mail_address=:mailAddress";
+	// 	SqlParameterSource param = new MapSqlParameterSource().addValue("mailAddress", mailAddress);
+	// 	List<Administrator> administratorList = template.query(sql, param, ADMINISTRATOR_ROW_MAPPER);
+	// 	if (administratorList.size() == 0) {
+	// 		return null;
+	// 	}
+	// 	return administratorList.get(0);
+	// }
+
 	public Administrator findByMailAddress(String mailAddress) {
-		String sql = "select id,name,mail_address,password from administrators where mail_address=:mailAddress";
+		String sql = "select id, name, mail_address, password from administrators where mail_address=:mailAddress";
+		
+		// MapSqlParameterSourceを使ってパラメータを追加
 		SqlParameterSource param = new MapSqlParameterSource().addValue("mailAddress", mailAddress);
+		
+		// パラメータを渡して結果を取得
 		List<Administrator> administratorList = template.query(sql, param, ADMINISTRATOR_ROW_MAPPER);
-		if (administratorList.size() == 0) {
+		
+		if (administratorList.isEmpty()) {
 			return null;
 		}
-		return administratorList.get(0);
+		return administratorList.get(0);  // 最初の1件を返します
 	}
 
-}
+
+	public void save(Administrator administrator) {
+		// TODO Auto-generated method stub
+		throw new UnsupportedOperationException("Unimplemented method 'save'");
+	}
+	}
+
+

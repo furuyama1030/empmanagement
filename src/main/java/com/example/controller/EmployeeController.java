@@ -63,6 +63,10 @@ public class EmployeeController {
     }
 		return "employee/list";
 	}
+	// @GetMapping("/search")
+	// public String searchemployees(String keyword, Model model, HttpSession session){
+
+	// }
 
 	/////////////////////////////////////////////////////
 	// ユースケース：従業員詳細を表示する

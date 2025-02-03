@@ -26,8 +26,23 @@ public class AdministratorService {
 	 * @param administrator 管理者情報
 	 */
 	public void insert(Administrator administrator) {
-		administratorRepository.insert(administrator);
-	}
+		// メールアドレスがすでに存在するかを確認
+        Administrator existingAdministrator = administratorRepository.findByMailAddress(administrator.getMailAddress());
+		// administratorRepository.insert(administrator);
+		// 存在する場合はエラーメッセージを返す
+        if (existingAdministrator != null) {
+            throw new IllegalArgumentException("メールアドレスが重複しています");
+        }
+		// 存在しない場合、登録処理
+        administratorRepository.save(administrator);
+    }
+	    /**
+     * メールアドレスが既に存在するかを確認するメソッド
+     */
+    public boolean ismailAdressExist(String email) {
+        Administrator existingAdministrator = administratorRepository.findByMailAddress(email);
+        return existingAdministrator != null;
+    }
 
 	/**
 	 * ログインをします.
