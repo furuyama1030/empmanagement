@@ -12,9 +12,12 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import com.example.domain.Administrator;
 import com.example.domain.Employee;
 import com.example.form.UpdateEmployeeForm;
 import com.example.service.EmployeeService;
+
+import jakarta.servlet.http.HttpSession;
 
 /**
  * 従業員情報を操作するコントローラー.
@@ -49,9 +52,15 @@ public class EmployeeController {
 	 * @return 従業員一覧画面
 	 */
 	@GetMapping("/showList")
-	public String showList(Model model) {
+	public String showList(Model model,HttpSession session) {
 		List<Employee> employeeList = employeeService.showList();
 		model.addAttribute("employeeList", employeeList);
+    // セッションから管理者情報を取得
+    Administrator administrator = (Administrator) session.getAttribute("administrator");
+
+    if (administrator != null) {
+        model.addAttribute("administratorName", administrator.getName());
+    }
 		return "employee/list";
 	}
 
