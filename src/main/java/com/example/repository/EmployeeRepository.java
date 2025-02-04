@@ -73,6 +73,23 @@ public class EmployeeRepository {
 
 		return development;
 	}
+   /**
+     * 名前に部分一致する従業員を検索
+     *
+     * @param name 検索キーワード
+     * @return 検索結果の従業員リスト
+     */
+    public List<Employee> findByNameContaining(String name) {
+        String sql = "SELECT id,name,image,gender,hire_date,mail_address,zip_code,address,telephone,salary,characteristics,dependents_count " +
+                     "FROM employees WHERE name LIKE :name";
+
+        // 部分一致のため、LIKE演算子を使用
+        MapSqlParameterSource param = new MapSqlParameterSource().addValue("name", "%" + name + "%");
+
+        // queryメソッドで結果をリストで取得
+        return template.query(sql, param, EMPLOYEE_ROW_MAPPER);
+
+	}
 
 	/**
 	 * 従業員情報を変更します.
