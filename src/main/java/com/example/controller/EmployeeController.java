@@ -11,10 +11,14 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
+import com.example.domain.Administrator;
 import com.example.domain.Employee;
 import com.example.form.UpdateEmployeeForm;
 import com.example.service.EmployeeService;
+
+import jakarta.servlet.http.HttpSession;
 
 /**
  * 従業員情報を操作するコントローラー.
@@ -49,11 +53,37 @@ public class EmployeeController {
 	 * @return 従業員一覧画面
 	 */
 	@GetMapping("/showList")
-	public String showList(Model model) {
+	public String showList(Model model,HttpSession session) {
 		List<Employee> employeeList = employeeService.showList();
 		model.addAttribute("employeeList", employeeList);
+    // セッションから管理者情報を取得
+    Administrator administrator = (Administrator) session.getAttribute("administrator");
+
+    if (administrator != null) {
+        model.addAttribute("administratorName", administrator.getName());
+    }
 		return "employee/list";
 	}
+
+	@GetMapping("/search")
+	public String search(@RequestParam(name="searchName",required=false)String searchName,Model model){
+		List<Employee> employeeList;
+		// 検索ワードがある場合は、検索処理を実行
+    if (searchName != null && !searchName.isEmpty()) {
+        employeeList = employeeService.searchByName(searchName);
+    } else {
+        // 検索ワードがない場合は、全従業員を取得
+        employeeList = employeeService.showList();
+    }
+
+    // 検索結果をModelに格納し、画面に渡す
+	model.addAttribute("searchName", searchName);
+    model.addAttribute("employeeList", employeeList);
+
+    return "employee/list"; // 従業員一覧画面へ遷移
+}
+	
+
 
 	/////////////////////////////////////////////////////
 	// ユースケース：従業員詳細を表示する
