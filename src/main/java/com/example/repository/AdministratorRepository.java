@@ -36,6 +36,23 @@ public class AdministratorRepository {
 	@Autowired
 	private NamedParameterJdbcTemplate template;
 
+		/**
+	 * メールアドレスが存在するかをチェックする.
+	 * 
+	 * @param mailAddress メールアドレス
+	 * @return 存在すればtrue, 存在しなければfalse
+	 */
+	public boolean isMailAddressExist(String mailAddress) {
+		String sql = "SELECT COUNT(*) FROM administrators WHERE mail_address = :mailAddress";
+		SqlParameterSource param = new MapSqlParameterSource().addValue("mailAddress", mailAddress);
+		Integer count = template.queryForObject(sql, param, Integer.class);
+		if (count == null) {
+			count = 0;
+		}
+	
+		return count > 0;
+	}
+
 	/**
 	 * 主キーから管理者情報を取得します.
 	 * 
@@ -76,7 +93,7 @@ public class AdministratorRepository {
 	 */
 	public void insert(Administrator administrator) {
 		SqlParameterSource param = new BeanPropertySqlParameterSource(administrator);
-		String sql = "insert into administrators(name,mail_address,password)values(:name,:mailAddress,:password);";
+		String sql = "insert into administrators(name,mail_address,password)values(:name,:mailAddress,:password)";
 		template.update(sql, param);
 	}
 

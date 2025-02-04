@@ -34,7 +34,7 @@ public class AdministratorService {
             throw new IllegalArgumentException("メールアドレスが重複しています");
         }
 		// 存在しない場合、登録処理
-        administratorRepository.save(administrator);
+        administratorRepository.insert(administrator);
     }
 	    /**
      * メールアドレスが既に存在するかを確認するメソッド
